@@ -7,6 +7,8 @@ The following requirements are needed by this module:
 
 - [[requirement_argocd]] <<requirement_argocd,argocd>> (>= 5)
 
+- [[requirement_helm]] <<requirement_helm,helm>> (~> 2)
+
 - [[requirement_null]] <<requirement_null,null>> (>= 3)
 
 - [[requirement_random]] <<requirement_random,random>> (>= 3)
@@ -21,6 +23,8 @@ The following providers are used by this module:
 
 - [[provider_random]] <<provider_random,random>> (>= 3)
 
+- [[provider_kubernetes]] <<provider_kubernetes,kubernetes>>
+
 - [[provider_argocd]] <<provider_argocd,argocd>> (>= 5)
 
 - [[provider_utils]] <<provider_utils,utils>> (>= 1)
@@ -31,9 +35,11 @@ The following resources are used by this module:
 
 - https://registry.terraform.io/providers/oboukili/argocd/latest/docs/resources/application[argocd_application.this] (resource)
 - https://registry.terraform.io/providers/oboukili/argocd/latest/docs/resources/project[argocd_project.this] (resource)
+- https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/namespace[kubernetes_namespace.airflow_namespace] (resource)
+- https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/secret[kubernetes_secret.airflow_ssh_secret] (resource)
 - https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource[null_resource.dependencies] (resource)
 - https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource[null_resource.this] (resource)
-- https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/password[random_password.minio_root_secretkey] (resource)
+- https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/password[random_password.airflow_webserver_secret_key] (resource)
 - https://registry.terraform.io/providers/cloudposse/utils/latest/docs/data-sources/deep_merge_yaml[utils_deep_merge_yaml.values] (data source)
 
 === Required Inputs
@@ -51,6 +57,42 @@ Type: `string`
 Description: Base domain of the cluster. Value used for the ingress' URL of the application.
 
 Type: `string`
+
+==== [[input_fernetKey]] <<input_fernetKey,fernetKey>>
+
+Description: Fernet key settings. The Fernet key used to encrypt passwords (can only be set during install, not upgrade).
+
+Type: `string`
+
+==== [[input_storage]] <<input_storage,storage>>
+
+Description: MinIO S3 bucket configuration values for the bucket where the archived metrics will be stored.
+
+Type:
+[source,hcl]
+----
+object({
+    bucket_name       = string
+    endpoint          = string
+    access_key        = string
+    secret_access_key = string
+  })
+----
+
+==== [[input_database]] <<input_database,database>>
+
+Description: database configuration
+
+Type:
+[source,hcl]
+----
+object({
+    user     = string
+    password = string
+    database = string
+    endpoint = string
+  })
+----
 
 === Optional Inputs
 
@@ -94,7 +136,7 @@ Description: Override of target revision of the application chart.
 
 Type: `string`
 
-Default: `"v1.2.0"`
+Default: `"v1.0.0"`
 
 ==== [[input_cluster_issuer]] <<input_cluster_issuer,cluster_issuer>>
 
@@ -152,41 +194,9 @@ Type: `map(string)`
 
 Default: `{}`
 
-==== [[input_config_minio]] <<input_config_minio,config_minio>>
-
-Description: Variable to create buckets and required users and policies.
-
-Type:
-[source,hcl]
-----
-object({
-    policies = optional(list(object({
-      name = string
-      statements = list(object({
-        resources = list(string)
-        actions   = list(string)
-      }))
-    })), [])
-    users = optional(list(object({
-      accessKey = string
-      secretKey = string
-      policy    = string
-    })), [])
-    buckets = optional(list(object({
-      name          = string
-      policy        = optional(string, "none")
-      purge         = optional(bool, false)
-      versioning    = optional(bool, false)
-      objectlocking = optional(bool, false)
-    })), [])
-  })
-----
-
-Default: `{}`
-
 ==== [[input_oidc]] <<input_oidc,oidc>>
 
-Description: OIDC configuration to access the MinIO web interface.
+Description: OIDC configuration to access the Airflow web interface.
 
 Type:
 [source,hcl]
@@ -204,6 +214,42 @@ object({
 
 Default: `null`
 
+==== [[input_mlflow]] <<input_mlflow,mlflow>>
+
+Description: mlflow configuration
+
+Type:
+[source,hcl]
+----
+object({
+    endpoint = string
+  })
+----
+
+Default: `null`
+
+==== [[input_ray]] <<input_ray,ray>>
+
+Description: ray configuration
+
+Type:
+[source,hcl]
+----
+object({
+    endpoint = string
+  })
+----
+
+Default: `null`
+
+==== [[input_home_ssh]] <<input_home_ssh,home_ssh>>
+
+Description: home ssh
+
+Type: `string`
+
+Default: `"/home/gerson/.ssh/id_ed25519"`
+
 === Outputs
 
 The following outputs are exported:
@@ -211,14 +257,6 @@ The following outputs are exported:
 ==== [[output_id]] <<output_id,id>>
 
 Description: ID to pass other modules in order to refer to this module as a dependency.
-
-==== [[output_endpoint]] <<output_endpoint,endpoint>>
-
-Description: MinIO endpoint where the buckets are available.
-
-==== [[output_minio_root_user_credentials]] <<output_minio_root_user_credentials,minio_root_user_credentials>>
-
-Description: The MinIO root user password.
 // END_TF_DOCS
 
 === Reference in table format 
@@ -233,6 +271,7 @@ Description: The MinIO root user password.
 |===
 |Name |Version
 |[[requirement_argocd]] <<requirement_argocd,argocd>> |>= 5
+|[[requirement_helm]] <<requirement_helm,helm>> |~> 2
 |[[requirement_null]] <<requirement_null,null>> |>= 3
 |[[requirement_random]] <<requirement_random,random>> |>= 3
 |[[requirement_utils]] <<requirement_utils,utils>> |>= 1
@@ -245,6 +284,7 @@ Description: The MinIO root user password.
 |Name |Version
 |[[provider_null]] <<provider_null,null>> |>= 3
 |[[provider_random]] <<provider_random,random>> |>= 3
+|[[provider_kubernetes]] <<provider_kubernetes,kubernetes>> |n/a
 |[[provider_utils]] <<provider_utils,utils>> |>= 1
 |[[provider_argocd]] <<provider_argocd,argocd>> |>= 5
 |===
@@ -256,9 +296,11 @@ Description: The MinIO root user password.
 |Name |Type
 |https://registry.terraform.io/providers/oboukili/argocd/latest/docs/resources/application[argocd_application.this] |resource
 |https://registry.terraform.io/providers/oboukili/argocd/latest/docs/resources/project[argocd_project.this] |resource
+|https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/namespace[kubernetes_namespace.airflow_namespace] |resource
+|https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/secret[kubernetes_secret.airflow_ssh_secret] |resource
 |https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource[null_resource.dependencies] |resource
 |https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource[null_resource.this] |resource
-|https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/password[random_password.minio_root_secretkey] |resource
+|https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/password[random_password.airflow_webserver_secret_key] |resource
 |https://registry.terraform.io/providers/cloudposse/utils/latest/docs/data-sources/deep_merge_yaml[utils_deep_merge_yaml.values] |data source
 |===
 
@@ -306,7 +348,7 @@ Description: The MinIO root user password.
 |[[input_target_revision]] <<input_target_revision,target_revision>>
 |Override of target revision of the application chart.
 |`string`
-|`"v1.2.0"`
+|`"v1.0.0"`
 |no
 
 |[[input_cluster_issuer]] <<input_cluster_issuer,cluster_issuer>>
@@ -359,40 +401,14 @@ object({
 |`{}`
 |no
 
-|[[input_config_minio]] <<input_config_minio,config_minio>>
-|Variable to create buckets and required users and policies.
-|
-
-[source]
-----
-object({
-    policies = optional(list(object({
-      name = string
-      statements = list(object({
-        resources = list(string)
-        actions   = list(string)
-      }))
-    })), [])
-    users = optional(list(object({
-      accessKey = string
-      secretKey = string
-      policy    = string
-    })), [])
-    buckets = optional(list(object({
-      name          = string
-      policy        = optional(string, "none")
-      purge         = optional(bool, false)
-      versioning    = optional(bool, false)
-      objectlocking = optional(bool, false)
-    })), [])
-  })
-----
-
-|`{}`
-|no
+|[[input_fernetKey]] <<input_fernetKey,fernetKey>>
+|Fernet key settings. The Fernet key used to encrypt passwords (can only be set during install, not upgrade).
+|`string`
+|n/a
+|yes
 
 |[[input_oidc]] <<input_oidc,oidc>>
-|OIDC configuration to access the MinIO web interface.
+|OIDC configuration to access the Airflow web interface.
 |
 
 [source]
@@ -411,6 +427,74 @@ object({
 |`null`
 |no
 
+|[[input_storage]] <<input_storage,storage>>
+|MinIO S3 bucket configuration values for the bucket where the archived metrics will be stored.
+|
+
+[source]
+----
+object({
+    bucket_name       = string
+    endpoint          = string
+    access_key        = string
+    secret_access_key = string
+  })
+----
+
+|n/a
+|yes
+
+|[[input_database]] <<input_database,database>>
+|database configuration
+|
+
+[source]
+----
+object({
+    user     = string
+    password = string
+    database = string
+    endpoint = string
+  })
+----
+
+|n/a
+|yes
+
+|[[input_mlflow]] <<input_mlflow,mlflow>>
+|mlflow configuration
+|
+
+[source]
+----
+object({
+    endpoint = string
+  })
+----
+
+|`null`
+|no
+
+|[[input_ray]] <<input_ray,ray>>
+|ray configuration
+|
+
+[source]
+----
+object({
+    endpoint = string
+  })
+----
+
+|`null`
+|no
+
+|[[input_home_ssh]] <<input_home_ssh,home_ssh>>
+|home ssh
+|`string`
+|`"/home/gerson/.ssh/id_ed25519"`
+|no
+
 |===
 
 = Outputs
@@ -419,8 +503,6 @@ object({
 |===
 |Name |Description
 |[[output_id]] <<output_id,id>> |ID to pass other modules in order to refer to this module as a dependency.
-|[[output_endpoint]] <<output_endpoint,endpoint>> |MinIO endpoint where the buckets are available.
-|[[output_minio_root_user_credentials]] <<output_minio_root_user_credentials,minio_root_user_credentials>> |The MinIO root user password.
 |===
 // END_TF_TABLES
 ====
