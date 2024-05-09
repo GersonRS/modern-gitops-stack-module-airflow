@@ -1,1 +1,0 @@
-# modern-gitops-stack-module-airflow
