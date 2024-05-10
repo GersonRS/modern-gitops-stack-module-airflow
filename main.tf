@@ -39,9 +39,9 @@ resource "argocd_project" "this" {
 
   metadata {
     name      = var.destination_cluster != "in-cluster" ? "airflow-${var.destination_cluster}" : "airflow"
-    namespace = var.argocd_namespace
+    namespace = "argocd"
     annotations = {
-      "modern-gitops-stack.io/argocd_namespace" = var.argocd_namespace
+      "modern-gitops-stack.io/argocd_namespace" = "argocd"
     }
   }
 
@@ -72,7 +72,7 @@ data "utils_deep_merge_yaml" "values" {
 resource "argocd_application" "this" {
   metadata {
     name      = var.destination_cluster != "in-cluster" ? "airflow-${var.destination_cluster}" : "airflow"
-    namespace = var.argocd_namespace
+    namespace = "argocd"
     labels = merge({
       "application" = "airflow"
       "cluster"     = var.destination_cluster
