@@ -12,9 +12,9 @@ resource "random_password" "airflow_webserver_secret_key" {
 resource "kubernetes_namespace" "airflow_namespace" {
   metadata {
     annotations = {
-      name = "orchestrator"
+      name = "airflow"
     }
-    name = "orchestrator"
+    name = "airflow"
   }
   depends_on = [
     resource.null_resource.dependencies,
@@ -24,7 +24,7 @@ resource "kubernetes_namespace" "airflow_namespace" {
 resource "kubernetes_secret" "airflow_ssh_secret" {
   metadata {
     name      = "airflow-ssh-secret"
-    namespace = "orchestrator"
+    namespace = "airflow"
   }
 
   data = {
@@ -51,7 +51,7 @@ resource "argocd_project" "this" {
 
     destination {
       name      = var.destination_cluster
-      namespace = "orchestrator"
+      namespace = "airflow"
     }
 
     orphaned_resources {
@@ -100,7 +100,7 @@ resource "argocd_application" "this" {
 
     destination {
       name      = var.destination_cluster
-      namespace = "orchestrator"
+      namespace = "airflow"
     }
 
     sync_policy {
