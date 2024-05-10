@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.2.0](https://github.com/GersonRS/modern-gitops-stack-module-airflow/compare/v1.1.0...v1.2.0) (2024-05-10)
+
+
+### 🚀 New Features
+
+* remove argo_namespace variable ([5fe3f64](https://github.com/GersonRS/modern-gitops-stack-module-airflow/commit/5fe3f646f046b7daa66764d95de6a9c531d65b11))
+
+
+### 📚 Documentation
+
+* **terraform-docs:** generate docs and write to README.adoc ([ebb24c2](https://github.com/GersonRS/modern-gitops-stack-module-airflow/commit/ebb24c2b418a47d99bcde2295c1d180bff2bf6ab))
+
 ## [1.1.0](https://github.com/GersonRS/modern-gitops-stack-module-airflow/compare/v1.0.0...v1.1.0) (2024-05-09)
 
 
