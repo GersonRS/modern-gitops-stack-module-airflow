@@ -52,8 +52,12 @@ locals {
           }
         }
       ]
-      executor                     = "KubernetesExecutor"
+      executor                     = "CeleryKubernetesExecutor"
       webserverSecretKeySecretName = "my-webserver-secret"
+
+      workers = {
+        replicas = 3
+      }
       createUserJob = {
         useHelmHooks   = false
         applyCustomEnv = false
