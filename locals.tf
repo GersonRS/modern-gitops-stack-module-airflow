@@ -120,7 +120,7 @@ locals {
         gitSync = {
           enabled      = true
           repo         = "git@github.com:solinftec/solinftec-airflow.git"
-          branch       = "main"
+          branch       = "master"
           rev          = "HEAD"
           depth        = 2
           maxFailures  = 2
