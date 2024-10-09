@@ -119,8 +119,8 @@ locals {
       dags = {
         gitSync = {
           enabled      = true
-          repo         = "git@github.com:solinftec/solinftec-airflow.git"
-          branch       = "master"
+          repo         = "git@github.com:GersonRS/airflow-dags.git"
+          branch       = "main"
           rev          = "HEAD"
           depth        = 2
           maxFailures  = 2
