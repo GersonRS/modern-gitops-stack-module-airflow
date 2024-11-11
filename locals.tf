@@ -266,16 +266,17 @@ locals {
                 "token_key":"access_token",
                 "icon":"fa-address-card",
                 "remote_app": {
-                    "api_base_url": "https://idpa-api-preprod.luizalabs.com/",
-                    "access_token_url": "https://idpa-api-preprod.luizalabs.com/oauth/token",
-                    "authorize_url": "https://idpa-api-preprod.luizalabs.com/oauth/authorize",
-                    "userinfo_url": "https://idpa-api-preprod.luizalabs.com/oauth/userinfo",
-                    "server_metadata_url": "https://idpa-api-preprod.luizalabs.com/.well-known/openid-configuration",
+                    "api_base_url": "${var.oidc.issuer_url}/protocol/",
+                    "access_token_url": "${var.oidc.token_url}",
+                    "authorize_url": "${var.oidc.oauth_url}",
+                    "userinfo_url": "${var.oidc.api_url}",
+                    "server_metadata_url": "${var.oidc.issuer_url}/.well-known/openid-configuration",
                     "request_token_url": None,
-                    "client_id": "dJADL06h8ph8FItBq9-llqok-Z1mvrpVCKYPXzvgOSA",
-                    "client_secret": "2Klj4JK5X9OKJdT1L6VP64YHcTOO1ddOj9m42CDR--Y",
+                    "client_id": "${var.oidc.client_id}",
+                    "client_secret": "${var.oidc.client_secret}",
                     "client_kwargs":{
-                        "scope": "email profile openid"
+                        "scope": "email profile openid",
+                        "verify": False
                     },
                 }
             }]
