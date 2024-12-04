@@ -232,90 +232,83 @@ locals {
           }
         ]
         webserverConfig = <<-EOT
-            import os
-            import jwt
-            import requests
-            import logging
-            from base64 import b64decode
-            from cryptography.hazmat.primitives import serialization
-            from flask_appbuilder.security.manager import AUTH_DB, AUTH_OAUTH
-            from airflow import configuration as conf
             from airflow.www.security import AirflowSecurityManager
+            from airflow.www.security_manager import AirflowSecurityManagerV2
+            from flask_appbuilder.security.manager import AUTH_OAUTH
+            import logging
+            import os
+            from typing import Union, Any
 
             log = logging.getLogger(__name__)
+            log.setLevel(os.getenv("AIRFLOW__LOGGING__FAB_LOGGING_LEVEL", "INFO"))
 
+            CSRF_ENABLED = True
             AUTH_TYPE = AUTH_OAUTH
-            AUTH_USER_REGISTRATION = True
-            AUTH_ROLES_SYNC_AT_LOGIN = True
-            AUTH_USER_REGISTRATION_ROLE = "Viewer"
-            OIDC_ISSUER = "${var.oidc.issuer_url}"
 
-            # Make sure you create these role on Keycloak
+            AUTH_ROLE_ADMIN = 'Admin'
+            AUTH_ROLE_PUBLIC = 'Public'
+            AUTH_ROLE_VIEWER = 'Viewer'
+            AUTH_ROLE_USER = 'User'
+
+            AUTH_USER_REGISTRATION = True
+            AUTH_USER_REGISTRATION_ROLE = AUTH_ROLE_VIEWER
+
+            AUTH_ROLES_SYNC_AT_LOGIN = True
+
             AUTH_ROLES_MAPPING = {
                 "Viewer": ["Viewer"],
                 "Admin": ["Admin"],
                 "User": ["User"],
-                "Public": ["Public"],
-                "Op": ["Op"],
             }
 
-            OAUTH_PROVIDERS = [
-                {
-                    "name": "keycloak",
-                    "icon": "fa-key",
-                    "token_key": "access_token",
-                    "remote_app": {
-                        "api_base_url": "${var.oidc.issuer_url}/protocol/openid-connect",
-                        "access_token_url": "${var.oidc.token_url}",
-                        "authorize_url": "${var.oidc.oauth_url}",
-                        "userinfo_url": "${var.oidc.api_url}",
-                        "server_metadata_url": "${var.oidc.issuer_url}/.well-known/openid-configuration",
-                        "request_token_url": None,
-                        "client_id": "${var.oidc.client_id}",
-                        "client_secret": "${var.oidc.client_secret}",
-                        "client_kwargs":{
-                            "scope": "email profile openid",
-                            "verify": False
-                        },
+            OAUTH_PROVIDERS = [{
+                "name": "keycloak",
+                "token_key":"access_token",
+                "icon":"fa-address-card",
+                "remote_app": {
+                    "api_base_url": "${var.oidc.issuer_url}/protocol/",
+                    "access_token_url": "${var.oidc.token_url}",
+                    "authorize_url": "${var.oidc.oauth_url}",
+                    "userinfo_url": "${var.oidc.api_url}",
+                    "server_metadata_url": "${var.oidc.issuer_url}/.well-known/openid-configuration",
+                    "request_token_url": None,
+                    "client_id": "${var.oidc.client_id}",
+                    "client_secret": "${var.oidc.client_secret}",
+                    "client_kwargs":{
+                        "scope": "email profile openid",
+                        "verify": False
                     },
                 }
-            ]
-
-            # Fetch public key
-            req = requests.get(OIDC_ISSUER)
-            key_der_base64 = req.json()["public_key"]
-            key_der = b64decode(key_der_base64.encode())
-            public_key = serialization.load_der_public_key(key_der)
-
-
+            }]
+            def map_roles(team_list):
+                team_role_map = {
+                    "modern-gitops-stack-viewer": AUTH_ROLE_VIEWER,
+                    "modern-gitops-stack-admins": AUTH_ROLE_ADMIN,
+                    "modern-gitops-stack-public": AUTH_ROLE_PUBLIC,
+                    "modern-gitops-stack-user": AUTH_ROLE_USER,
+                }
+                return list(set(team_role_map.get(team, AUTH_ROLE_VIEWER) for team in team_list))
             class CustomSecurityManager(AirflowSecurityManager):
-                def get_oauth_user_info(self, provider, response):
-                    if provider == "keycloak":
-                        token = response["access_token"]
-                        me = jwt.decode(token, public_key, algorithms=["HS256", "RS256"])
+                def get_oauth_user_info(self, provider, resp):
+                    me = self.oauth_remotes[provider].get("openid-connect/userinfo")
+                    me.raise_for_status()
+                    data = me.json()
+                    log.debug("User info from Keycloak: %s", data)
+                    log.info("User info from Keycloak: %s", data)
 
-                        # Extract roles from resource access
-                        realm_access = me.get("realm_access", {})
-                        groups = realm_access.get("roles", [])
+                    groups = map_roles(data.get("groups", []))
 
-                        log.info("groups: {0}".format(groups))
+                    if groups is None or len(groups) < 1:
+                        groups = ["User"]
 
-                        if not groups:
-                            groups = ["Viewer"]
-
-                        userinfo = {
-                            "username": me.get("preferred_username"),
-                            "email": me.get("email"),
-                            "first_name": me.get("given_name"),
-                            "last_name": me.get("family_name"),
-                            "role_keys": groups,
-                        }
-
-                        log.info("user info: {0}".format(userinfo))
-
-                        return userinfo
-                    else:
-                        return {}
+                    log.info("User groups info: %s", groups)
+                    return {
+                        "username": data.get("preferred_username", ""),
+                        "first_name": data.get("given_name", ""),
+                        "last_name": data.get("family_name", ""),
+                        "email": data.get("email", ""),
+                        "role_keys": groups
+                    }
 
 
             # Make sure to replace this with your own implementation of AirflowSecurityManager class
