@@ -52,7 +52,7 @@ locals {
           }
         }
       ]
-      executor                     = "CeleryKubernetesExecutor"
+      executor                     = "KubernetesExecutor"
       webserverSecretKeySecretName = "my-webserver-secret"
 
       workers = {
