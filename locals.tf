@@ -41,7 +41,7 @@ locals {
       images = {
         airflow = {
           repository = "gersonrs/airflow"
-          tag        = "v1.0.10"
+          tag        = "v1.2.0"
         }
       }
       volumes = [
@@ -54,6 +54,10 @@ locals {
       ]
       executor                     = "KubernetesExecutor"
       webserverSecretKeySecretName = "my-webserver-secret"
+
+      workers = {
+        replicas = 3
+      }
       createUserJob = {
         useHelmHooks   = false
         applyCustomEnv = false
@@ -118,8 +122,8 @@ locals {
           repo         = "git@github.com:GersonRS/airflow-dags.git"
           branch       = "main"
           rev          = "HEAD"
-          depth        = 1
-          maxFailures  = 1
+          depth        = 2
+          maxFailures  = 2
           subPath      = "dags"
           sshKeySecret = "airflow-ssh-secret"
           knownHosts   = "|-\n|1|yutcXh9HhbK6KCouq3xMQ38B9ns=|V9zQ39gzVxSZ75WU78CGJiVKCOk= ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBEmKSENjQEezOmxkZMy7opKgwFB9nkt5YRrYMjNuG5N87uRgg6CLrbo5wAdT/y6v0mKV0U2w0WZ2YB/++Tpockg=\n|1|7ww9iNXn8d1jtXlaDjt+fYpsRi0=|vfHsTzw+QATWkCKD7kgG2jhu/1w= ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBEmKSENjQEezOmxkZMy7opKgwFB9nkt5YRrYMjNuG5N87uRgg6CLrbo5wAdT/y6v0mKV0U2w0WZ2YB/++Tpockg="
