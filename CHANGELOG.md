@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.3.0](https://github.com/GersonRS/modern-gitops-stack-module-airflow/compare/v1.2.0...v1.3.0) (2024-05-10)
+
+
+### 🚀 New Features
+
+* rename module namespace from orchestrator to airflow ([f4438a7](https://github.com/GersonRS/modern-gitops-stack-module-airflow/commit/f4438a7cf68a082125b29c2a69ed38a98a2d6a5f))
+
+
+### 🔥 Bug Fixes
+
+* fix gitsync branch ([74d3498](https://github.com/GersonRS/modern-gitops-stack-module-airflow/commit/74d3498f6aefc00cd4253aaeed76a79f58a03657))
+
+
+### 📚 Documentation
+
+* **terraform-docs:** generate docs and write to README.adoc ([7b23d13](https://github.com/GersonRS/modern-gitops-stack-module-airflow/commit/7b23d1318e08abe2d1a9a613dbca2a1f923cde03))
+
 ## [1.2.0](https://github.com/GersonRS/modern-gitops-stack-module-airflow/compare/v1.1.0...v1.2.0) (2024-05-10)
 
 
