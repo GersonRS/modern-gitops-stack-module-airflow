@@ -41,7 +41,7 @@ locals {
       images = {
         airflow = {
           repository = "gersonrs/airflow"
-          tag        = "v1.1.0"
+          tag        = "v1.2.0"
         }
       }
       volumes = [
