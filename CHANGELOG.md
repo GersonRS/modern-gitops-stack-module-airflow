@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.5.0](https://github.com/GersonRS/modern-gitops-stack-module-airflow/compare/v1.4.0...v1.5.0) (2025-01-21)
+
+
+### 🚀 New Features
+
+* update airflow image ([17ddf85](https://github.com/GersonRS/modern-gitops-stack-module-airflow/commit/17ddf85be8a51a8eacefc8a9de4f394b6c0e5f7f))
+
+
+### 📚 Documentation
+
+* **terraform-docs:** generate docs and write to README.adoc ([9c7e2ff](https://github.com/GersonRS/modern-gitops-stack-module-airflow/commit/9c7e2ff95458fb19972f5cf9e743fd796f8bbfcd))
+
 ## [1.4.0](https://github.com/GersonRS/modern-gitops-stack-module-airflow/compare/v1.3.0...v1.4.0) (2025-01-19)
 
 
