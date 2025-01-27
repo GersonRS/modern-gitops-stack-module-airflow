@@ -204,7 +204,7 @@ locals {
         - name: AIRFLOW__KUBERNETES_EXECUTOR__DELETE_WORKER_PODS_ON_FAILURE
           value: "True"
         - name: AIRFLOW__CORE__ALLOWED_DESERIALIZATION_CLASSES
-          value: "airflow\.* astro\.*"
+          value: airflow\.* astro\.*
         - name:  AIRFLOW__ASTRO_SDK__XCOM_STORAGE_CONN_ID
           value: "conn_minio_s3"
         - name:  AIRFLOW__ASTRO_SDK__XCOM_STORAGE_URL
