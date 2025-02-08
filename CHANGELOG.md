@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.6.1](https://github.com/GersonRS/modern-gitops-stack-module-airflow/compare/v1.6.0...v1.6.1) (2025-02-08)
+
+
+### 📚 Documentation
+
+* **terraform-docs:** generate docs and write to README.adoc ([28a7082](https://github.com/GersonRS/modern-gitops-stack-module-airflow/commit/28a7082e2911b614addd62c1f090655a3f23e911))
+
+
+### ⌨️ Code Refactoring
+
+* adjust workflows ([34aca3b](https://github.com/GersonRS/modern-gitops-stack-module-airflow/commit/34aca3b23fa3c552f73620fc202870f2cd716578))
+
 ## [1.6.0](https://github.com/GersonRS/modern-gitops-stack-module-airflow/compare/v1.5.0...v1.6.0) (2025-02-08)
 
 
