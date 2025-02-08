@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.6.0](https://github.com/GersonRS/modern-gitops-stack-module-airflow/compare/v1.5.0...v1.6.0) (2025-02-08)
+
+
+### 🚀 New Features
+
+* add new env var ([bf9dbee](https://github.com/GersonRS/modern-gitops-stack-module-airflow/commit/bf9dbee7538844431f15e898f776b829d487a3f7))
+* add new env var ([36fa239](https://github.com/GersonRS/modern-gitops-stack-module-airflow/commit/36fa2393baf29050e2d06040602a73a15146cd00))
+
+
+### 📚 Documentation
+
+* **terraform-docs:** generate docs and write to README.adoc ([fff9e5d](https://github.com/GersonRS/modern-gitops-stack-module-airflow/commit/fff9e5d5ea64360ab56a21b29719a4c2448ee46f))
+
+
+### ⌨️ Code Refactoring
+
+* adjust chart-update workflow ([7a1e30b](https://github.com/GersonRS/modern-gitops-stack-module-airflow/commit/7a1e30b1e67b6a68f22d6eee413cb1e4b376bf4e))
+
 ## [1.5.0](https://github.com/GersonRS/modern-gitops-stack-module-airflow/compare/v1.4.0...v1.5.0) (2025-01-21)
 
 
