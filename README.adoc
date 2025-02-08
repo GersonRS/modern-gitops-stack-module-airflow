@@ -23,9 +23,9 @@ The following providers are used by this module:
 
 - [[provider_kubernetes]] <<provider_kubernetes,kubernetes>>
 
-- [[provider_utils]] <<provider_utils,utils>> (>= 1)
-
 - [[provider_argocd]] <<provider_argocd,argocd>> (>= 6)
+
+- [[provider_utils]] <<provider_utils,utils>> (>= 1)
 
 - [[provider_null]] <<provider_null,null>> (>= 3)
 
@@ -282,11 +282,11 @@ Description: ID to pass other modules in order to refer to this module as a depe
 [cols="a,a",options="header,autowidth"]
 |===
 |Name |Version
-|[[provider_null]] <<provider_null,null>> |>= 3
 |[[provider_random]] <<provider_random,random>> |>= 3
 |[[provider_kubernetes]] <<provider_kubernetes,kubernetes>> |n/a
 |[[provider_argocd]] <<provider_argocd,argocd>> |>= 6
 |[[provider_utils]] <<provider_utils,utils>> |>= 1
+|[[provider_null]] <<provider_null,null>> |>= 3
 |===
 
 = Resources
