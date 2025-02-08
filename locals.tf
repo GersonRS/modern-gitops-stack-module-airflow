@@ -199,10 +199,18 @@ locals {
           value: "conn_minio_s3"
         - name: AIRFLOW__CORE__REMOTE_LOG_CONN_ID
           value: "conn_minio_s3"
-        - name: AIRFLOW__KUBERNETES__DELETE_WORKER_PODS
+        - name: AIRFLOW__KUBERNETES_EXECUTOR__DELETE_WORKER_PODS
+          value: "True"
+        - name: AIRFLOW__KUBERNETES_EXECUTOR__DELETE_WORKER_PODS_ON_FAILURE
           value: "True"
         - name: AIRFLOW__CORE__ALLOWED_DESERIALIZATION_CLASSES
           value: airflow\.* astro\.*
+        - name:  AIRFLOW__ASTRO_SDK__XCOM_STORAGE_CONN_ID
+          value: "conn_minio_s3"
+        - name:  AIRFLOW__ASTRO_SDK__XCOM_STORAGE_URL
+          value: "s3://airflow/xcom/"
+        - name:  AIRFLOW__CORE__XCOM_BACKEND
+          value: "astro.custom_backend.astro_custom_backend.AstroCustomXcomBackend"
 
 
       EOT
