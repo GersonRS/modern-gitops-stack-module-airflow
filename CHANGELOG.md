@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.6.2](https://github.com/GersonRS/modern-gitops-stack-module-airflow/compare/v1.6.1...v1.6.2) (2025-02-08)
+
+
+### ⌨️ Code Refactoring
+
+* adjust workflows ([61f86fd](https://github.com/GersonRS/modern-gitops-stack-module-airflow/commit/61f86fd0a492ffb9517cc93f7c455fbd66514262))
+* try adjust code 5 ([c70fc27](https://github.com/GersonRS/modern-gitops-stack-module-airflow/commit/c70fc27439064c01c8f199d9a15e812c05e3e7ab))
+
 ## [1.6.1](https://github.com/GersonRS/modern-gitops-stack-module-airflow/compare/v1.6.0...v1.6.1) (2025-02-08)
 
 
